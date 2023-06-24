@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Expense_Manager.Models;
 
 namespace Expense_Manager.Data
 {
@@ -9,5 +10,6 @@ namespace Expense_Manager.Data
             : base(options)
         {
         }
+        public DbSet<Expense_Manager.Models.Expense>? Expense { get; set; }
     }
 }
