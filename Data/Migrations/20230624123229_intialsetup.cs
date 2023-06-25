@@ -19,7 +19,7 @@ namespace Expense_Manager.Data.Migrations
                     ExpenseType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ExpenseAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ExpenseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ExpenseLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    
                     ExpenseUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>

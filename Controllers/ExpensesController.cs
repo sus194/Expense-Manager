@@ -65,7 +65,7 @@ namespace Expense_Manager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ExpenseName,ExpenseType,ExpenseAmount,ExpenseDate,ExpenseLocation,ExpenseUserId")] Expense expense)
+        public async Task<IActionResult> Create([Bind("Id,ExpenseName,ExpenseType,ExpenseAmount,ExpenseDate, ExpenseUserId")] Expense expense)
         {
             if (ModelState.IsValid)
             {
@@ -99,7 +99,7 @@ namespace Expense_Manager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ExpenseName,ExpenseType,ExpenseAmount,ExpenseDate,ExpenseLocation,ExpenseUserId")] Expense expense)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ExpenseName,ExpenseType,ExpenseAmount,ExpenseDate,ExpenseUserId")] Expense expense)
         {
             if (id != expense.Id)
             {
