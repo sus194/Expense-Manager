@@ -73,7 +73,8 @@ namespace Expense_Manager.Controllers
                 expense.ExpenseUserId = userId;
                 _context.Add(expense);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["SuccessMessage"] = "Expense added";
+                return RedirectToAction(nameof(Create));
             }
             return View(expense);
         }
