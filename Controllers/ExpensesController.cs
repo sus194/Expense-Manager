@@ -37,6 +37,7 @@ namespace Expense_Manager.Controllers
         }
 
         // GET: Expenses/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Expense == null)
@@ -55,6 +56,7 @@ namespace Expense_Manager.Controllers
         }
 
         // GET: Expenses/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -65,10 +67,12 @@ namespace Expense_Manager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,ExpenseName,ExpenseType,ExpenseAmount,ExpenseDate, ExpenseUserId")] Expense expense)
         {
             if (ModelState.IsValid)
             {
+
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 expense.ExpenseUserId = userId;
                 _context.Add(expense);
@@ -76,10 +80,12 @@ namespace Expense_Manager.Controllers
                 TempData["SuccessMessage"] = "Expense added";
                 return RedirectToAction(nameof(Create));
             }
+            
             return View(expense);
         }
 
         // GET: Expenses/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Expense == null)
@@ -100,6 +106,7 @@ namespace Expense_Manager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ExpenseName,ExpenseType,ExpenseAmount,ExpenseDate,ExpenseUserId")] Expense expense)
         {
             if (id != expense.Id)
@@ -125,12 +132,13 @@ namespace Expense_Manager.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Search));
             }
             return View(expense);
         }
 
         // GET: Expenses/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Expense == null)
@@ -151,6 +159,7 @@ namespace Expense_Manager.Controllers
         // POST: Expenses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Expense == null)
@@ -164,8 +173,113 @@ namespace Expense_Manager.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Search));
         }
+        [HttpPost]
+        public async Task<IActionResult> Search(String Name, String Type, int AmountFrom, int AmountTo, DateTime DateFrom, DateTime DateTo)
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var expenses = await _context.Expense.ToListAsync();
+
+            // Filter expenses for the logged-in user
+            var userExpenses = expenses.Where(e => e.ExpenseUserId == userId).ToList();
+
+            if(Name != null)
+            {
+                userExpenses = userExpenses.Where(e => e.ExpenseName == Name).ToList();
+            }
+
+            if(Type != null)
+            {
+                userExpenses = userExpenses.Where(e => e.ExpenseType == Type).ToList();
+            }
+
+            if(AmountFrom != 0)
+            {
+                if(AmountTo != 0)
+                {
+                    userExpenses = userExpenses.Where(e => e.ExpenseAmount >= AmountFrom && e.ExpenseAmount <= AmountTo).ToList();
+                }
+                else
+                {
+                    userExpenses = userExpenses.Where(e => e.ExpenseAmount >= AmountFrom).ToList();
+                }
+            }
+
+            else if(AmountTo != 0)
+            {
+                userExpenses = userExpenses.Where(e => e.ExpenseAmount <= AmountTo).ToList();
+            }
+
+            if(DateTime.Compare(DateFrom, DateTo) < 0)
+            {
+                userExpenses = userExpenses.Where(e => e.ExpenseDate >= DateFrom && e.ExpenseDate <= DateTo).ToList();
+            }
+
+            Response.Cookies.Append("SearchParameters", $"{Name}|{Type}|{AmountFrom}|{AmountTo}|{DateFrom}|{DateTo}");
+
+            return View(userExpenses);
+
+        }
+
+        public async Task<IActionResult> Search()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var expenses = await _context.Expense.ToListAsync();
+
+            // Filter expenses for the logged-in user
+            var userExpenses = expenses.Where(e => e.ExpenseUserId == userId).ToList();
+
+            // Retrieve the search parameters from the cookie
+            var searchParameters = Request.Cookies["SearchParameters"];
+
+            if (!string.IsNullOrEmpty(searchParameters))
+            {
+                var parameters = searchParameters.Split('|');
+
+                string Name = parameters[0];
+                string Type = parameters[1];
+                int AmountFrom = int.Parse(parameters[2]);
+                int AmountTo = int.Parse(parameters[3]);
+                DateTime DateFrom = DateTime.Parse(parameters[4]);
+                DateTime DateTo = DateTime.Parse(parameters[5]);
+
+                if (!string.IsNullOrEmpty(Name))
+                {
+                    userExpenses = userExpenses.Where(e => e.ExpenseName == Name).ToList();
+                }
+
+                if (!string.IsNullOrEmpty(Type))
+                {
+                    userExpenses = userExpenses.Where(e => e.ExpenseType == Type).ToList();
+                }
+
+                if (AmountFrom != 0)
+                {
+                    if (AmountTo != 0)
+                    {
+                        userExpenses = userExpenses.Where(e => e.ExpenseAmount >= AmountFrom && e.ExpenseAmount <= AmountTo).ToList();
+                    }
+                    else
+                    {
+                        userExpenses = userExpenses.Where(e => e.ExpenseAmount >= AmountFrom).ToList();
+                    }
+                }
+                else if (AmountTo != 0)
+                {
+                    userExpenses = userExpenses.Where(e => e.ExpenseAmount <= AmountTo).ToList();
+                }
+
+                if (DateTime.Compare(DateFrom, DateTo) < 0)
+                {
+                    userExpenses = userExpenses.Where(e => e.ExpenseDate >= DateFrom && e.ExpenseDate <= DateTo).ToList();
+                }
+            }
+
+            return View(userExpenses);
+        }
+
+
 
         private bool ExpenseExists(int id)
         {

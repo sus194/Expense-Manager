@@ -20,7 +20,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="ExpenseType" class="control-label"></label>
-                <input asp-for="ExpenseType" class="form-control" />
+                <select asp-for="ExpenseType" class="form-control">
+                    <option value="">-- Select Type --</option>
+                    <option value="Operating">Operating</option>
+                    <option value="Non-operating">Non-operating</option>
+                    <option value="Fixed">Fixed</option>
+                    <option value="Variable">Variable</option>
+
+                </select>
                 <span asp-validation-for="ExpenseType" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -46,7 +53,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Search">Back To List</a>
 </div>
 
 @section Scripts {

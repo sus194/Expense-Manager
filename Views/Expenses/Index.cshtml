@@ -1,55 +1,125 @@
 ﻿@model IEnumerable<Expense_Manager.Models.Expense>
 
+
 @{
     ViewData["Title"] = "Index";
+    
 }
 
+
+
 <h1>Index</h1>
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Search" method="post" class="form-inline">
+
+            <div class="form-group">
+                <label for="Name" class="control-label">Expense Name</label>
+                <input type="text" for="Name" name ="Name"class="form-control" placeholder="Name" />
+            </div>
+            <div class="form-group">
+                <label for="Type" class="control-label">Expense Type</label>
+                <select for="Type" name="Type" class="form-control">
+                    <option value="">-- Select Type --</option>
+                    <option value="Operating">Operating</option>
+                    <option value="Non-operating">Non-operating</option>
+                    <option value="Fixed">Fixed</option>
+                    <option value="Variable">Variable</option>
+
+                </select>
+                
+            </div>
+            <div class="form-group">
+                <label for="Amount" class="control-label">Expense Amount Range</label>
+                <input type="number" id="AmountFrom" name="AmountFrom" class="form-control" placeholder="From" />
+                <input type="number" id="AmountTo" name="AmountTo" class="form-control" placeholder="To" />
+                <span id="amountError" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Date" class="control-label">Expense Date Range</label>
+                <input type="date" id="DateFrom" name="DateFrom" class="form-control" placeholder="From" />
+                <input type="date" id="DateTo" name="DateTo" class="form-control" placeholder="To" />
+                <span id="dateError" class="text-danger"></span>
+            </div>
+
+            
+
+            
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpenseName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpenseType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpenseAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpenseDate)
-            </th>
-            
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpenseName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpenseType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpenseAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpenseDate)
-            </td>
-            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+
+<!-- HTML canvas element to render the chart -->
+<canvas id="expenseChart" width="600" height="400"></canvas>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("form").submit(function (event) {
+                var amountFrom = parseInt($("#AmountFrom").val());
+                var amountTo = parseInt($("#AmountTo").val());
+                var dateFrom = parseInt($("#DateFrom").val());
+                var dateTo = parseInt($("#DateTo").val());
+
+                if (amountFrom > amountTo) {
+                    $("#amountError").text("From value must be smaller than or equal to To value");
+                    event.preventDefault(); // Prevent form submission
+                } else {
+                    $("#amountError").text(""); // Clear the error message
+                }
+
+                if (dateFrom > dateTo) {
+                    $("#dateError").text("From value must be smaller than or equal to To value");
+                    event.preventDefault(); // Prevent form submission
+                } else {
+                    $("#dateError").text(""); // Clear the error message
+                }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Retrieve the data from the model
+        var expenses = @Html.Raw(Json.Serialize(Model));
+        console.log(expenses);
+
+
+        // Extract the required data for the chart
+        var expenseNames = expenses.map(e => e.expenseName);
+        var expenseAmounts = expenses.map(e => e.expenseAmount);
+        var expenseType = ["Operating", "Non-operating", "Fixed", "Variable"];
+        // Create the chart
+        var ctx = document.getElementById('expenseChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: expenseType,
+                datasets: [{
+                    label: 'Expense Amount',
+                    data: expenseAmounts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 }
-    </tbody>
-</table>
