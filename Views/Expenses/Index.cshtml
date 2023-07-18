@@ -10,48 +10,57 @@
 
 <h1>Index</h1>
 
-<div class="row">
-    <div class="col-md-6">
-
-        <form asp-action="Search" method="post" class="form-inline">
-
-            <div class="form-group">
-                <label for="Name" class="control-label">Expense Name</label>
-                <input type="text" for="Name" name ="Name"class="form-control" placeholder="Name" />
-            </div>
-            <div class="form-group">
-                <label for="Type" class="control-label">Expense Type</label>
-                <select for="Type" name="Type" class="form-control">
-                    <option value="">-- Select Type --</option>
-                    <option value="Operating">Operating</option>
-                    <option value="Non-operating">Non-operating</option>
-                    <option value="Fixed">Fixed</option>
-                    <option value="Variable">Variable</option>
-
-                </select>
-                
-            </div>
-            <div class="form-group">
-                <label for="Amount" class="control-label">Expense Amount Range</label>
-                <input type="number" id="AmountFrom" name="AmountFrom" class="form-control" placeholder="From" />
-                <input type="number" id="AmountTo" name="AmountTo" class="form-control" placeholder="To" />
-                <span id="amountError" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="Date" class="control-label">Expense Date Range</label>
-                <input type="date" id="DateFrom" name="DateFrom" class="form-control" placeholder="From" />
-                <input type="date" id="DateTo" name="DateTo" class="form-control" placeholder="To" />
-                <span id="dateError" class="text-danger"></span>
-            </div>
-
-            
-
-            
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+<form asp-action="Search" method="post" class="form-inline">
+    <div class="form-group row">
+        <label for="Name" class="col-sm-2 col-form-label">Expense Name</label>
+        <div class="col-sm-4">
+            <input type="text" for="Name" name="Name" class="form-control" placeholder="Name" />
+        </div>
     </div>
-</div>
+    <div class="form-group row">
+        <label for="Type" class="col-sm-2 col-form-label">Expense Type</label>
+        <div class="col-sm-4">
+            <select for="Type" name="Type" class="form-control">
+                <option value="">-- Select Type --</option>
+                <option value="Operating">Operating</option>
+                <option value="Non-operating">Non-operating</option>
+                <option value="Fixed">Fixed</option>
+                <option value="Variable">Variable</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="Amount" class="col-sm-2 col-form-label">Expense Amount Range</label>
+        <div class="col-sm-4">
+            <input type="number" id="AmountFrom" name="AmountFrom" class="form-control" placeholder="From" />
+        </div>
+        <div class="col-sm-4">
+            <input type="number" id="AmountTo" name="AmountTo" class="form-control" placeholder="To" />
+        </div>
+        <div class="col-sm-2">
+            <span id="amountError" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="Date" class="col-sm-2 col-form-label">Expense Date Range</label>
+        <div class="col-sm-4">
+            <input type="date" id="DateFrom" name="DateFrom" class="form-control" placeholder="From" />
+        </div>
+        <div class="col-sm-4">
+            <input type="date" id="DateTo" name="DateTo" class="form-control" placeholder="To" />
+        </div>
+        <div class="col-sm-2">
+            <span id="dateError" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
+
 
 
 <p>
