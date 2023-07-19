@@ -11,9 +11,10 @@
         if (User.Identity?.IsAuthenticated ?? false)
         {
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Confirm</button>
+                <button type="submit" class="btn btn-primary">Confirm</button>
             </form>
-            <a class="nav-link text-dark" asp-area="Expenses" asp-page="/Index">Back</a>
+            <a class="btn btn-primary" asp-area="Expenses" asp-page="/Index" style="margin-top: 10px;">Back</a>
+
         }
         else
         {

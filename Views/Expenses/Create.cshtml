@@ -1,5 +1,6 @@
 ﻿@model Expense_Manager.Models.Expense
 
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -9,6 +10,7 @@
 <h4>Expense</h4>
 @{
     var successMessage = TempData["SuccessMessage"] as string;
+    var Typeslist = TempData["Typeslist"] as List<string>;
 }
 
 @if (!string.IsNullOrEmpty(successMessage))
@@ -23,35 +25,44 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ExpenseName" class="control-label"></label>
+                <label asp-for="ExpenseName" class="control-label">ExpenseName</label>
                 <input asp-for="ExpenseName" class="form-control" />
                 <span asp-validation-for="ExpenseName" class="text-danger"></span>
+               
             </div>
             <div class="form-group">
-                <label asp-for="ExpenseType" class="control-label"></label>
-                <select asp-for="ExpenseType" class="form-control">
-                    <option value="">-- Select Type --</option>
-                    <option value="Operating">Operating</option>
-                    <option value="Non-operating">Non-operating</option>
-                    <option value="Fixed">Fixed</option>
-                    <option value="Variable">Variable</option>
+                <label asp-for="ExpenseType" class="control-label">ExpenseType</label>
+                <input asp-for='ExpenseType' hidden="hidden" class="form-control" id="customExpenseType">
+                <select asp-for="ExpenseType" class="form-control" id="expenseTypeSelect">
+                    <option value="">--Select Option--</option>
+                    <option value="Custom">Custom</option>
+                    @if (Typeslist != null)
+                    {
+                        @foreach (var type in Typeslist)
+                        {
+                            <option value="@type">@type</option>
+                        }
+                    }
                     
+
+                   
                 </select>
                 <span asp-validation-for="ExpenseType" class="text-danger"></span>
+                
             </div>
+            
             <div class="form-group">
-                <label asp-for="ExpenseAmount" class="control-label"></label>
+                <label asp-for="ExpenseAmount" class="control-label">ExpenseAmount</label>
                 <input asp-for="ExpenseAmount" class="form-control" />
                 <span asp-validation-for="ExpenseAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ExpenseDate" class="control-label"></label>
+                <label asp-for="ExpenseDate" class="control-label">ExpenseDate</label>
                 <input asp-for="ExpenseDate" class="form-control" />
-                <span asp-validation-for="ExpenseDate" class="text-danger"></span>
+                
             </div>
-            
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ExpenseUserId" value ="userID" />
+            <input type="hidden" asp-for="ExpenseUserId" value="userID" />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -64,5 +75,22 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        
+        $(document).ready(function () {
+            $('#expenseTypeSelect').change(function () {
+                if ($(this).val() === 'Custom') {
+                    $('#customExpenseType').removeAttr('hidden');
+                    $(this).attr('hidden', 'hidden');
+                } else {
+                    $('#customExpenseType').attr('hidden', 'hidden');
+                    $(this).removeAttr('hidden');
+                }
+            });
+        });
+        
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

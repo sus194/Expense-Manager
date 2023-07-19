@@ -27,6 +27,7 @@ namespace Expense_Manager.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
+            
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var expenses = await _context.Expense.ToListAsync();
 
@@ -59,8 +60,25 @@ namespace Expense_Manager.Controllers
         [Authorize]
         public IActionResult Create()
         {
+            var distinctExpenseTypes = _context.Expense
+                .Select(e => e.ExpenseType)
+                .Distinct().ToList();
+
+            var additionalExpenseTypes = new List<string>
+            {
+                "Operating",
+                "Non-operating",
+                "Fixed",
+                "Variable",
+
+            };
+
+            distinctExpenseTypes = distinctExpenseTypes.Union(additionalExpenseTypes).ToList();
+
+            TempData["Typeslist"] = distinctExpenseTypes;
             return View();
         }
+
 
         // POST: Expenses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -70,6 +88,8 @@ namespace Expense_Manager.Controllers
         [Authorize]
         public async Task<IActionResult> Create([Bind("Id,ExpenseName,ExpenseType,ExpenseAmount,ExpenseDate, ExpenseUserId")] Expense expense)
         {
+           
+            Console.WriteLine(expense.ExpenseType);
             if (ModelState.IsValid)
             {
 
@@ -98,6 +118,21 @@ namespace Expense_Manager.Controllers
             {
                 return NotFound();
             }
+            var distinctExpenseTypes = _context.Expense
+                .Select(e => e.ExpenseType)
+                .Distinct().ToList();
+            var additionalExpenseTypes = new List<string>
+            {
+                "Operating",
+                "Non-operating",
+                "Fixed",
+                "Variable",
+
+            };
+
+            distinctExpenseTypes = distinctExpenseTypes.Union(additionalExpenseTypes).ToList();
+
+            TempData["Typeslist"] = distinctExpenseTypes;
             return View(expense);
         }
 

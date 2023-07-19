@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Index";
     
+    
 }
 
 
@@ -21,12 +22,14 @@
         <label for="Type" class="col-sm-2 col-form-label">Expense Type</label>
         <div class="col-sm-4">
             <select for="Type" name="Type" class="form-control">
-                <option value="">-- Select Type --</option>
-                <option value="Operating">Operating</option>
-                <option value="Non-operating">Non-operating</option>
-                <option value="Fixed">Fixed</option>
-                <option value="Variable">Variable</option>
+                <option value="">--Select Type--</option>
+                @foreach (var item in Model.Select(x => x.ExpenseType).Distinct())
+                {
+                    <option value="@item">@item</option>
+                }
+
             </select>
+
         </div>
     </div>
     <div class="form-group row">
@@ -98,24 +101,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Retrieve the data from the model
-        var expenses = @Html.Raw(Json.Serialize(Model));
-        console.log(expenses);
-
-
-        // Extract the required data for the chart
-        var expenseNames = expenses.map(e => e.expenseName);
-        var expenseAmounts = expenses.map(e => e.expenseAmount);
-        var expenseType = ["Operating", "Non-operating", "Fixed", "Variable"];
+        
         // Create the chart
         var ctx = document.getElementById('expenseChart').getContext('2d');
         var chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: expenseType,
+                labels: [],
                 datasets: [{
                     label: 'Expense Amount',
-                    data: expenseAmounts,
+                    data: [],
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
@@ -130,5 +125,35 @@
                 }
             }
         });
+
+        var expenses = @Html.Raw(Json.Serialize(Model));
+        console.log(expenses);
+
+        // Extract the required data for the chart
+        var expenseType = [];
+        var expenseAmounts = [];
+
+        // Iterate over expenses
+        for (var i = 0; i < expenses.length; i++) {
+            var expense = expenses[i];
+            var index = expenseType.indexOf(expense.expenseType);
+
+            // If expense type already exists in expenseType array
+            if (index > -1) {
+                // Add the expense amount to the existing bar
+                expenseAmounts[index] += expense.expenseAmount;
+            } else {
+                // Add a new expense type and expense amount
+                expenseType.push(expense.expenseType);
+                expenseAmounts.push(expense.expenseAmount);
+            }
+        }
+
+        // Update the chart data and labels
+        chart.data.labels = expenseType;
+        chart.data.datasets[0].data = expenseAmounts;
+
+        // Update the chart
+        chart.update();
     </script>
 }

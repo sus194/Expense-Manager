@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var Typeslist = TempData["Typeslist"] as List<string>;
 }
 
 <h1>Edit</h1>
@@ -19,16 +20,24 @@
                 <span asp-validation-for="ExpenseName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ExpenseType" class="control-label"></label>
-                <select asp-for="ExpenseType" class="form-control">
-                    <option value="">-- Select Type --</option>
-                    <option value="Operating">Operating</option>
-                    <option value="Non-operating">Non-operating</option>
-                    <option value="Fixed">Fixed</option>
-                    <option value="Variable">Variable</option>
+                <label asp-for="ExpenseType" class="control-label">ExpenseType</label>
+                <input asp-for='ExpenseType' hidden="hidden" class="form-control" id="customExpenseType">
+                <select asp-for="ExpenseType" class="form-control" id="expenseTypeSelect">
+                    <option value="">--Select Option--</option>
+                    <option value="Custom">Custom</option>
+                    @if (Typeslist != null)
+                    {
+                        @foreach (var type in Typeslist)
+                        {
+                            <option value="@type">@type</option>
+                        }
+                    }
+                    
+
 
                 </select>
                 <span asp-validation-for="ExpenseType" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="ExpenseAmount" class="control-label"></label>
@@ -57,5 +66,20 @@
 </div>
 
 @section Scripts {
+    <script>
+
+        $(document).ready(function () {
+            $('#expenseTypeSelect').change(function () {
+                if ($(this).val() === 'Custom') {
+                    $('#customExpenseType').removeAttr('hidden');
+                    $(this).attr('hidden', 'hidden');
+                } else {
+                    $('#customExpenseType').attr('hidden', 'hidden');
+                    $(this).removeAttr('hidden');
+                }
+            });
+        });
+
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
