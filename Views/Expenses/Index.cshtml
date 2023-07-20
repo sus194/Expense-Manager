@@ -121,7 +121,7 @@
         var ctx = document.getElementById('expenseChart').getContext('2d');
         var expenses = @Html.Raw(Json.Serialize(Model));
         var chart = null;
-
+        var expenseType = [];
         function createBarChart(expense) {
             chart = new Chart(ctx, {
                 type: 'bar',
@@ -147,7 +147,7 @@
 
 
             // Extract the required data for the chart
-            var expenseType = [];
+            
             var expenseAmounts = [];
 
             // Iterate over expenses
@@ -179,11 +179,7 @@
             chart = new Chart(ctx, {
                 type: 'scatter', // Change the chart type to "scatter"
                 data: {
-                    datasets: [{
-                        label: 'Expenses',
-                        data: [],
-                        backgroundColor: 'rgb(255, 99, 132)'
-                    }],
+                    datasets: [],
                 },
                 options: {
                     responsive: true,
@@ -204,19 +200,59 @@
                 }
             });
 
-            
 
-            // Populate the data for the chart
-            var chartData = expense.map(function (expens) {
-                return {
-                    x: moment(expens.expenseDate), // Parse the date string to a Date object
-                    y: expens.expenseAmount
-                };
-            });
+            var colorMap = new Map();;
+          
+          if(expenseType){
 
-            chart.data.datasets[0].data = chartData
+                
+                for (var item in expenseType){
+                    type = expenseType[item]
+                    var chardataset = {
+                        label: type,
+                        data: [],
+                        backgroundColor: [], // Provide an empty array for background colors
+                        pointRadius: 5, // Adjust the size of the dots
+                    }
+
+                    var data= [];
+                    expense.map(function (expens) {
+                        const subdata = {
+                            x: moment(expens.expenseDate), // Parse the date string to a Date object
+                            y: expens.expenseAmount
+                        }
+
+
+                        if (expens.expenseType == type) {
+                            data.push(subdata)
+                            
+                        }
+                    })
+
+                    var color = generateColorFromString()
+                    while (colorMap.has(color)){
+                        color = generateColorFromString()
+                    }
+                    colorMap.set(color,type);
+
+                    chardataset.data = data;
+                    chardataset.backgroundColor = color;
+
+                    chart.data.datasets.push(chardataset)
+                }
+                
+          }
 
             chart.update();
+        }
+
+        function generateColorFromString() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
         
 
