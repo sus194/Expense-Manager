@@ -21,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ExpenseType" class="control-label">ExpenseType</label>
-                <input asp-for='ExpenseType' hidden="hidden" class="form-control" id="customExpenseType">
+                
                 <select asp-for="ExpenseType" class="form-control" id="expenseTypeSelect">
                     <option value="">--Select Option--</option>
                     <option value="Custom">Custom</option>
@@ -32,10 +32,9 @@
                             <option value="@type">@type</option>
                         }
                     }
-                    
-
-
+                   
                 </select>
+                <input asp-for='ExpenseType' hidden="hidden" class="form-control" id="customExpenseType">
                 <span asp-validation-for="ExpenseType" class="text-danger"></span>
 
             </div>
@@ -77,6 +76,10 @@
                     $('#customExpenseType').attr('hidden', 'hidden');
                     $(this).removeAttr('hidden');
                 }
+            });
+            $('#customExpenseType').change(function () {
+                var customExpenseValue = $(this).val();
+                $('#expenseTypeSelect').val(customExpenseValue);
             });
         });
 
