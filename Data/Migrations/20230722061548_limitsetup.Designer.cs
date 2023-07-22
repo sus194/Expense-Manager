@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Expense_Manager.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230721222551_limitsetup")]
+    [Migration("20230722061548_limitsetup")]
     partial class limitsetup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,26 @@ namespace Expense_Manager.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Expense");
+                });
+
+            modelBuilder.Entity("Expense_Manager.Models.ExpenseLimit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ExpenseType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Limit")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExpenseLimit");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

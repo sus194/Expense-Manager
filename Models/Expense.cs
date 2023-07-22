@@ -11,6 +11,7 @@
         
         
         public string ExpenseUserId { get; set; }
+        public int ExpenseLimitId { get; set; }
 
         public Expense()
         {

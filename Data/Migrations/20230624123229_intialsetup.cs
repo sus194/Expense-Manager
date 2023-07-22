@@ -19,7 +19,7 @@ namespace Expense_Manager.Data.Migrations
                     ExpenseType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ExpenseAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ExpenseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    
+                    ExpenseLimitId = table.Column<int>(type: "nvarchar(450)", nullable: true),
                     ExpenseUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -29,9 +29,20 @@ namespace Expense_Manager.Data.Migrations
                                  name: "FK_Expense_AspNetUsers_ExpenseUserId",
                                  column: x => x.ExpenseUserId,
                                  principalTable: "AspNetUsers",
-                                 principalColumn: "Id",
-                                                                                                                                           onDelete: ReferentialAction.Cascade);
+                                 principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Expense_ExpenseLimit_ExpenseLimitId", // Specify a unique name for the foreign key constraint
+                        column: x => x.ExpenseLimitId,
+                        principalTable: "ExpenseLimit", // Replace "AnotherTable" with the name of the related table
+                        principalColumn: "Id");
+
+
+
+
+    
                 });
+
+                
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

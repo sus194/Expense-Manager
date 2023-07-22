@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Expense_Manager.Data;
 using Expense_Manager.Models;
-
+using Microsoft.AspNetCore.Authorization;
 namespace Expense_Manager.Controllers
 {
     public class ExpenseLimitsController : Controller
@@ -20,6 +20,7 @@ namespace Expense_Manager.Controllers
         }
 
         // GET: ExpenseLimits
+        /*
         public async Task<IActionResult> Index()
         {
               return _context.ExpenseLimit != null ? 
@@ -44,6 +45,8 @@ namespace Expense_Manager.Controllers
 
             return View(expenseLimit);
         }
+
+        */
 
         // GET: ExpenseLimits/Create
         public IActionResult Create()
