@@ -11,5 +11,7 @@ namespace Expense_Manager.Data
         {
         }
         public DbSet<Expense_Manager.Models.Expense>? Expense { get; set; }
+        public DbSet<Expense_Manager.Models.ExpenseLimit>? ExpenseLimit { get; set; }
+        
     }
 }

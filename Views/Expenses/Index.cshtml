@@ -149,11 +149,11 @@
             // Extract the required data for the chart
             
             var expenseAmounts = [];
-
+            var expenseTyp = [];
             // Iterate over expenses
             for (var i = 0; i < expense.length; i++) {
                 var expens = expense[i];
-                var index = expenseType.indexOf(expens.expenseType);
+                var index = expenseTyp.indexOf(expens.expenseType);
 
                 // If expense type already exists in expenseType array
                 if (index > -1) {
@@ -161,14 +161,15 @@
                     expenseAmounts[index] += expens.expenseAmount;
                 } else {
                     // Add a new expense type and expense amount
-                    expenseType.push(expens.expenseType);
+                    expenseTyp.push(expens.expenseType);
                     expenseAmounts.push(expens.expenseAmount);
                 }
             }
 
             // Update the chart data and labels
-            chart.data.labels = expenseType;
+            chart.data.labels = expenseTyp;
             chart.data.datasets[0].data = expenseAmounts;
+            expenseType = expenseTyp;
 
             // Update the chart
             chart.update();
@@ -204,8 +205,6 @@
             var colorMap = new Map();;
           
           if(expenseType){
-
-                
                 for (var item in expenseType){
                     type = expenseType[item]
                     var chardataset = {
