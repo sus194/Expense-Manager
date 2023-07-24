@@ -1,16 +1,16 @@
 ﻿@model Expense_Manager.Models.ExpenseLimit
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "ExpenseLimit";
 }
 
-<h1>Edit</h1>
+<h1>ExpenseLimit</h1>
 
 <h4>ExpenseLimit</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="ExpenseLimit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -23,6 +23,9 @@
                 <input asp-for="Limit" class="form-control" />
                 <span asp-validation-for="Limit" class="text-danger"></span>
             </div>
+
+            <input type="hidden" asp-for="ExpenseUserId" value="userID" />
+            
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

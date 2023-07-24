@@ -30,6 +30,7 @@ namespace Expense_Manager.Controllers
             
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var expenses = await _context.Expense.ToListAsync();
+            
 
             // Filter expenses for the logged-in user
             var userExpenses = expenses.Where(e => e.ExpenseUserId == userId).ToList();
@@ -314,6 +315,21 @@ namespace Expense_Manager.Controllers
             return View(userExpenses);
         }
 
+
+
+
+        [Authorize]
+        //GET
+        public async Task<IActionResult> ExpenseLimit()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var limit = await _context.ExpenseLimit.ToListAsync();
+
+            // Filter expenses for the logged-in user
+            var userExpenses = limit.Where(e => e.ExpenseUserId == userId);
+
+            return View();
+        }
 
 
         private bool ExpenseExists(int id)
