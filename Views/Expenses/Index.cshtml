@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "Index";
-    
+    var limits = TempData["limit"] as List<ExpenseLimit>;
     
 }
 
@@ -87,6 +87,7 @@
 
 @section Scripts {
     <script>
+        console.log(limits)
         $(document).ready(function () {
             $("form").submit(function (event) {
                 var amountFrom = parseInt($("#AmountFrom").val());

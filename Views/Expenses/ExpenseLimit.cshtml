@@ -1,30 +1,31 @@
-﻿@model Expense_Manager.Models.ExpenseLimit
+﻿@model List<Expense_Manager.Models.ExpenseLimit>
 
 @{
     ViewData["Title"] = "ExpenseLimit";
+   
+   
+
 }
 
 <h1>ExpenseLimit</h1>
 
-<h4>ExpenseLimit</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="ExpenseLimit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ExpenseType" class="control-label"></label>
-                <input asp-for="ExpenseType" class="form-control" />
-                <span asp-validation-for="ExpenseType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Limit" class="control-label"></label>
-                <input asp-for="Limit" class="form-control" />
-                <span asp-validation-for="Limit" class="text-danger"></span>
-            </div>
-
-            <input type="hidden" asp-for="ExpenseUserId" value="userID" />
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <div class="form-group">
+                    <label asp-for="@Model[i].ExpenseType" class="control-label">@Model[i].ExpenseType</label>
+                    <input type="number" asp-for="@Model[i].Limit" class="form-control" />
+                    <input type="hidden" asp-for="@Model[i].Id" value="@Model[i].Id" />
+                    <input type="hidden" asp-for="@Model[i].ExpenseUserId" value="@Model[i].ExpenseUserId" />
+                    <input  type="hidden" asp-for="@Model[i].ExpenseType" value="@Model[i].ExpenseType" />
+                    @Html.ValidationMessageFor(m => m[i].Limit, "", new { @class = "text-danger" })
+                </div>
+            }
             
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -38,5 +39,6 @@
 </div>
 
 @section Scripts {
+    
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
