@@ -1,0 +1,44 @@
+﻿@model List<Expense_Manager.Models.ExpenseLimit>
+
+@{
+    ViewData["Title"] = "ExpenseLimit";
+   
+   
+
+}
+
+<h1>ExpenseLimit</h1>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ExpenseLimit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <div class="form-group">
+                    <label asp-for="@Model[i].ExpenseType" class="control-label">@Model[i].ExpenseType</label>
+                    <input type="number" asp-for="@Model[i].Limit" class="form-control" />
+                    <input type="hidden" asp-for="@Model[i].Id" value="@Model[i].Id" />
+                    <input type="hidden" asp-for="@Model[i].ExpenseUserId" value="@Model[i].ExpenseUserId" />
+                    <input  type="hidden" asp-for="@Model[i].ExpenseType" value="@Model[i].ExpenseType" />
+                    @Html.ValidationMessageFor(m => m[i].Limit, "", new { @class = "text-danger" })
+                </div>
+            }
+            
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
