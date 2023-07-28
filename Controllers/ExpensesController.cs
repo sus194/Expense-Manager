@@ -39,7 +39,9 @@ namespace Expense_Manager.Controllers
             // Filter expenses for the logged-in user
             var userExpenses = expenses.Where(e => e.ExpenseUserId == userId).ToList();
             var limit = await _context.ExpenseLimit.ToListAsync();
-            TempData["limit"] = limit.Where(e => e.ExpenseUserId == userId).ToList();
+            TempData["Limitlist"] = limit.Where(e => e.ExpenseUserId == userId).ToList();
+
+            
             return View(userExpenses);
         }
 
@@ -202,17 +204,45 @@ namespace Expense_Manager.Controllers
         {
             if (_context.Expense == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Expense'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Expense' is null.");
             }
+             
             var expense = await _context.Expense.FindAsync(id);
+            var type = expense?.ExpenseType;
+
             if (expense != null)
             {
                 _context.Expense.Remove(expense);
+
+                var check = await _context.Expense.ToListAsync();
+                var list = check.Where(e => e.ExpenseType == type);
+                var count = list.Count();
+
+                if (count ==1)
+                {
+                    var expenseLimits = await _context.ExpenseLimit.ToListAsync();
+                    var itemToRemove = expenseLimits.Where(e => e.ExpenseType == type);
+
+                    var expenselimit = await _context.ExpenseLimit.FindAsync(itemToRemove.First().Id);
+
+                    if (expenselimit != null)
+                    {
+                        _context.ExpenseLimit.Remove(expenselimit);
+                    }
+                }
+                
+                await _context.SaveChangesAsync();
             }
+
+
+           
             
-            await _context.SaveChangesAsync();
+            
+
             return RedirectToAction(nameof(Search));
         }
+
+
         [HttpPost]
         public async Task<IActionResult> Search(String Name, String Type, int AmountFrom, int AmountTo, DateTime DateFrom, DateTime DateTo)
         {

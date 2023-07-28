@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "Index";
-    var limits = TempData["limit"] as List<ExpenseLimit>;
+    
     
 }
 
@@ -87,7 +87,7 @@
 
 @section Scripts {
     <script>
-        console.log(limits)
+        
         $(document).ready(function () {
             $("form").submit(function (event) {
                 var amountFrom = parseInt($("#AmountFrom").val());
@@ -116,11 +116,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <!-- Chart.js adapter for Moment.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.1/chartjs-adapter-moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/2.2.1/chartjs-plugin-annotation.min.js"></script>
     <script>
 
         // Create the chart
         var ctx = document.getElementById('expenseChart').getContext('2d');
         var expenses = @Html.Raw(Json.Serialize(Model));
+        var expenseLimits = @Html.Raw(Json.Serialize(TempData["Limitlist"]));
+        console.log(expenseLimits)
         var chart = null;
         var expenseType = [];
         function createBarChart(expense) {
@@ -142,8 +145,14 @@
                         y: {
                             beginAtZero: true
                         }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: []
+                        }
                     }
                 }
+                
             });
 
 
@@ -171,7 +180,25 @@
             chart.data.labels = expenseTyp;
             chart.data.datasets[0].data = expenseAmounts;
             expenseType = expenseTyp;
-
+            
+            for (var i = 0; i < expenseLimits.length; i++) {
+                var limit = expenseLimits[i];
+                var annotation = {
+                    type: 'line',
+                    yMin: limit.limit,
+                    yMax: limit.limit,
+                    xMin: limit.expenseType-10,
+                    
+                    borderColor: generateColorFromString(),
+                    borderWidth: 2,
+                    label: {
+                        enabled: true,
+                        content: limit.expenseType + ' Limit: ' + limit.limit
+                    }
+                };
+                chart.options.plugins.annotation.annotations.push(annotation);
+            }
+            
             // Update the chart
             chart.update();
         }
