@@ -183,20 +183,21 @@
             
             for (var i = 0; i < expenseLimits.length; i++) {
                 var limit = expenseLimits[i];
+                var typeIndex = expenseType.indexOf(limit.expenseType);
                 var annotation = {
                     type: 'line',
                     yMin: limit.limit,
                     yMax: limit.limit,
-                    xMin: limit.expenseType-10,
-                    
-                    borderColor: generateColorFromString(),
+                    xMin: typeIndex-0.5,
+                    xMax: typeIndex+0.5,
+                    borderColor: 'rgba(192, 50, 50, 1)',
                     borderWidth: 2,
-                    label: {
-                        enabled: true,
-                        content: limit.expenseType + ' Limit: ' + limit.limit
-                    }
+                    
                 };
-                chart.options.plugins.annotation.annotations.push(annotation);
+                if (limit.limit>0){
+                    chart.options.plugins.annotation.annotations.push(annotation);
+                }
+                
             }
             
             // Update the chart
