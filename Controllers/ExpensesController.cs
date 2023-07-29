@@ -110,10 +110,17 @@ namespace Expense_Manager.Controllers
                         // For example:
                         Limit = 0,
                         ExpenseType = expense.ExpenseType,
-                        ExpenseUserId = userId
+                        ExpenseUserId = userId,
+                        items = 1
                     };
                     _context.Add(limit);
                     await _context.SaveChangesAsync();
+                }
+
+                else
+                {
+                    existingExpenseLimit.items += 1;
+                    _context.Update(existingExpenseLimit);
                 }
 
 

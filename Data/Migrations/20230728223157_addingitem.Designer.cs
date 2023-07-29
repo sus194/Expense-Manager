@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Expense_Manager.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230722090651_setuplimitwithuserid")]
-    partial class setuplimitwithuserid
+    [Migration("20230728223157_addingitem")]
+    partial class addingitem
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,9 +71,11 @@ namespace Expense_Manager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Limit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Limit")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("items")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

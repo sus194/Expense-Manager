@@ -77,6 +77,7 @@
             <option value="">--Select Value--</option>
             <option value="bar">Bar Chart</option>
             <option value="dots">Dot Chart</option>
+            <option value="pie">Pie Chart</option>
         </select>
     </div>
 </div>
@@ -135,6 +136,7 @@
         var ctx = document.getElementById('expenseChart').getContext('2d');
         var expenses = @Html.Raw(Json.Serialize(Model));
         var expenseLimits = @Html.Raw(Json.Serialize(TempData["Limitlist"]));
+        console.log(expenseLimits)
         var report = "";
         var graphVal = "";
         var currentYear = moment().year();
@@ -142,6 +144,7 @@
         var currentMonth = moment().month();
         var chart = null;
         var expenseType = [];
+        var colorMap = new Map();
         function createBarChart(expense) {
             chart = new Chart(ctx, {
                 type: 'bar',
@@ -153,7 +156,14 @@
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
-                    }]
+                    },
+                    {
+                        label: 'Expense Limit',
+                        data: [],
+                        backgroundColor: 'rgba(192, 50, 50, 1)',
+                       
+                    }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -280,12 +290,17 @@
                             
                             position: 'bottom'
                         }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: []
+                        }
                     }
                 }
             });
 
 
-            var colorMap = new Map();;
+           
           
           if(expenseType){
                 for (var item in expenseType){
@@ -328,13 +343,19 @@
                         }
                     })
 
-                   
+
 
                     var color = generateColorFromString()
-                    while (colorMap.has(color)){
-                        color = generateColorFromString()
+                    if (colorMap.get(type) != null) {
+                        color = colorMap.get(type)
                     }
-                    colorMap.set(color,type);
+
+                    else {
+                        while ([...colorMap.values()].includes(color)) {
+                            color = generateColorFromString()
+                        }
+                        colorMap.set(type, color);
+                    }
                    
                     chardataset.data = data;
                     chardataset.backgroundColor = color;
@@ -348,7 +369,166 @@
                 
           }
 
+            for (var i = 0; i < expenseLimits.length; i++) {
+                var limit = expenseLimits[i];
+                var averageLimit = Math.round(limit.limit/limit.items);
+               
+                var annotation = {
+                    type: 'line',
+                    yMin: limit.limit / limit.items,
+                    yMax: limit.limit / limit.items,
+                    
+                    borderColor: colorMap.get(limit.expenseType),
+                    borderWidth: 2,
+
+                };
+                if (limit.limit > 0) {
+                    chart.options.plugins.annotation.annotations.push(annotation);
+                }
+
+            }
+
             chart.update();
+        }
+
+        function createPieChart(expense){
+            chart = new Chart(ctx, {
+                type: 'pie', // Change the chart type to "scatter"
+                data: {
+
+                    labels:[],
+                    datasets: [
+                        {
+                            label:"Expense Data",
+                            data: [],
+                            backgroundColor: [
+                                
+                            ],
+                            hoverOffset: 4
+                        }
+                    ]
+                },
+                
+            });
+
+
+            var expenseAmounts = [];
+            var expenseTyp = [];
+            var expenseColor = [];
+            // Iterate over expenses
+            for (var i = 0; i < expense.length; i++) {
+                var expens = expense[i];
+                var index = expenseTyp.indexOf(expens.expenseType);
+
+                // If expense type already exists in expenseType array
+                if (report == "Yearly" && moment(expens.expenseDate).year() === currentYear) {
+                    // If expense type already exists in expenseType array
+                    if (index > -1) {
+                        // Add the expense amount to the existing bar
+                        expenseAmounts[index] += expens.expenseAmount;
+                    } else {
+                        // Add a new expense type and expense amount
+                        expenseTyp.push(expens.expenseType);
+                        expenseAmounts.push(expens.expenseAmount);
+                        var color = generateColorFromString()
+                        if (colorMap.get(expens.expenseType) != null) {
+                            color = colorMap.get(expens.expenseType)
+                        }
+
+                        else {
+                            while ([...colorMap.values()].includes(color)) {
+                                color = generateColorFromString()
+                            }
+                            colorMap.set(expens.expenseType, color);
+                        }
+
+                        expenseColor.push(color);
+                    }
+                }
+
+                else if (report == "Monthly" && moment(expens.expenseDate).month() === currentMonth) {
+
+                    if (index > -1) {
+                        // Add the expense amount to the existing bar
+                        expenseAmounts[index] += expens.expenseAmount;
+                    } else {
+                        // Add a new expense type and expense amount
+                        expenseTyp.push(expens.expenseType);
+                        expenseAmounts.push(expens.expenseAmount);
+                        var color = generateColorFromString()
+                        if (colorMap.get(expens.expenseType) != null) {
+                            color = colorMap.get(expens.expenseType)
+                        }
+
+                        else {
+                            while ([...colorMap.values()].includes(color)) {
+                                color = generateColorFromString()
+                            }
+                            colorMap.set(expens.expenseType, color);
+                        }
+
+                        expenseColor.push(color);
+                    }
+
+                }
+
+                else if (report == "Weekly" && moment(expens.expenseDate).week() === currentWeek) {
+                    if (index > -1) {
+                        // Add the expense amount to the existing bar
+                        expenseAmounts[index] += expens.expenseAmount;
+                    } else {
+                        // Add a new expense type and expense amount
+                        expenseTyp.push(expens.expenseType);
+                        expenseAmounts.push(expens.expenseAmount);
+                        var color = generateColorFromString()
+                        if (colorMap.get(expens.expenseType) != null) {
+                            color = colorMap.get(expens.expenseType)
+                        }
+
+                        else {
+                            while ([...colorMap.values()].includes(color)) {
+                                color = generateColorFromString()
+                            }
+                            colorMap.set(expens.expenseType, color);
+                        }
+
+                        expenseColor.push(color);
+                    }
+                }
+
+                else if (report == "") {
+                    if (index > -1) {
+                        // Add the expense amount to the existing bar
+                        expenseAmounts[index] += expens.expenseAmount;
+                    } else {
+                        // Add a new expense type and expense amount
+                        expenseTyp.push(expens.expenseType);
+                        expenseAmounts.push(expens.expenseAmount);
+                        var color = generateColorFromString()
+                        if (colorMap.get(expens.expenseType) != null) {
+                            color = colorMap.get(expens.expenseType)
+                        }
+
+                        else {
+                            while ([...colorMap.values()].includes(color)) {
+                                color = generateColorFromString()
+                            }
+                            colorMap.set(expens.expenseType, color);
+                        }
+
+                        expenseColor.push(color);
+                    }
+                }
+            }
+
+            // Update the chart data and labels
+            chart.data.labels = expenseTyp;
+            chart.data.datasets[0].data = expenseAmounts;
+            chart.data.datasets[0].backgroundColor = expenseColor;
+            expenseType = expenseTyp;
+
+            chart.update();
+
         }
 
         function generateColorFromString() {
@@ -369,12 +549,18 @@
 
             if (graphVal === "bar") {
                 createBarChart(expenses);
-            } else if (graphVal === "dots") {
+            } 
+            
+            else if (graphVal === "dots") {
                 createDotChart(expenses);
             }
 
+            else if (graphVal === "pie"){
+                createPieChart(expenses);
+            }
+
             else{
-                console.log(graphVal)
+                
                 createBarChart(expenses);
             }
         }

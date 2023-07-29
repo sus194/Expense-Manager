@@ -72,6 +72,9 @@ namespace Expense_Manager.Data.Migrations
                     b.Property<decimal>("Limit")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("items")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("ExpenseLimit");

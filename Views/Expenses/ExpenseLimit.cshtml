@@ -23,6 +23,7 @@
                     <input type="hidden" asp-for="@Model[i].Id" value="@Model[i].Id" />
                     <input type="hidden" asp-for="@Model[i].ExpenseUserId" value="@Model[i].ExpenseUserId" />
                     <input  type="hidden" asp-for="@Model[i].ExpenseType" value="@Model[i].ExpenseType" />
+                    <input  type="hidden" asp-for="@Model[i].items" value="@Model[i].items" />
                     @Html.ValidationMessageFor(m => m[i].Limit, "", new { @class = "text-danger" })
                 </div>
             }

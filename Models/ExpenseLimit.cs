@@ -7,6 +7,8 @@
         public decimal Limit { get; set; }
         public string ExpenseUserId { get; set; }
 
+        public int items { get; set; }
+
         public ExpenseLimit()
         {
 
