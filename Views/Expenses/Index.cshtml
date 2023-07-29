@@ -391,145 +391,7 @@
             chart.update();
         }
 
-        function createPieChart(){
-            chart = new Chart(ctx, {
-                type: 'pie', // Change the chart type to "scatter"
-                data: {
-
-                    labels:[],
-                    datasets: [
-                        {
-                            label:"Expense Data",
-                            data: [],
-                            backgroundColor: [
-                                
-                            ],
-                            hoverOffset: 4
-                        }
-                    ]
-                },
-                
-            });
-
-
-            var expenseAmounts = [];
-            var expenseTyp = [];
-            var expenseColor = [];
-            // Iterate over expenses
-            for (var i = 0; i < expenses.length; i++) {
-                var expens = expenses[i];
-                var index = expenseTyp.indexOf(expens.expenseType);
-
-                // If expense type already exists in expenseType array
-                if (report == "Yearly" && moment(expens.expenseDate).year() === currentYear) {
-                    // If expense type already exists in expenseType array
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                        var color = generateColorFromString()
-                        if (colorMap.get(expens.expenseType) != null) {
-                            color = colorMap.get(expens.expenseType)
-                        }
-
-                        else {
-                            while ([...colorMap.values()].includes(color)) {
-                                color = generateColorFromString()
-                            }
-                            colorMap.set(expens.expenseType, color);
-                        }
-
-                        expenseColor.push(color);
-                    }
-                }
-
-                else if (report == "Monthly" && moment(expens.expenseDate).month() === currentMonth) {
-
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                        var color = generateColorFromString()
-                        if (colorMap.get(expens.expenseType) != null) {
-                            color = colorMap.get(expens.expenseType)
-                        }
-
-                        else {
-                            while ([...colorMap.values()].includes(color)) {
-                                color = generateColorFromString()
-                            }
-                            colorMap.set(expens.expenseType, color);
-                        }
-
-                        expenseColor.push(color);
-                    }
-
-                }
-
-                else if (report == "Weekly" && moment(expens.expenseDate).week() === currentWeek) {
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                        var color = generateColorFromString()
-                        if (colorMap.get(expens.expenseType) != null) {
-                            color = colorMap.get(expens.expenseType)
-                        }
-
-                        else {
-                            while ([...colorMap.values()].includes(color)) {
-                                color = generateColorFromString()
-                            }
-                            colorMap.set(expens.expenseType, color);
-                        }
-
-                        expenseColor.push(color);
-                    }
-                }
-
-                else if (report == "") {
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                        var color = generateColorFromString()
-                        if (colorMap.get(expens.expenseType) != null) {
-                            color = colorMap.get(expens.expenseType)
-                        }
-
-                        else {
-                            while ([...colorMap.values()].includes(color)) {
-                                color = generateColorFromString()
-                            }
-                            colorMap.set(expens.expenseType, color);
-                        }
-
-                        expenseColor.push(color);
-                    }
-                }
-            }
-
-            // Update the chart data and labels
-            chart.data.labels = expenseTyp;
-            chart.data.datasets[0].data = expenseAmounts;
-            chart.data.datasets[0].backgroundColor = expenseColor;
-            expenseType = expenseTyp;
-
-            chart.update();
-
-        }
+        
 
         function generateColorFromString() {
             var letters = '0123456789ABCDEF';
@@ -566,7 +428,7 @@
         }
 
         // Initial chart creation
-        updateChart("bar");
+        updateChart();
 
         // Bind the change event using the .on() method to handle future elements
         $('#graph').on('change', function () {
