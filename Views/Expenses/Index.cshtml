@@ -183,6 +183,18 @@
 
 
             // Extract the required data for the chart
+            function assign(index, expens) {
+                if (index > -1) {
+                    // Add the expense amount to the existing bar
+                    expenseAmounts[index] += expens.expenseAmount;
+                } else {
+                    // Add a new expense type and expense amount
+                    expenseTyp.push(expens.expenseType);
+                    expenseAmounts.push(expens.expenseAmount);
+                   
+                }
+            }
+
             
             var expenseAmounts = [];
             var expenseTyp = [];
@@ -193,50 +205,20 @@
 
                 // If expense type already exists in expenseType array
                 if (report=="Yearly" && moment(expens.expenseDate).year() === currentYear) {
-                    // If expense type already exists in expenseType array
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                    }
+                    assign(index, expens)
                 }
 
                 else if (report == "Monthly" && moment(expens.expenseDate).month() === currentMonth){
-
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                    }
+                    assign(index, expens)
 
                 }
 
                 else if (report == "Weekly" && moment(expens.expenseDate).week() === currentWeek){
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                    }
+                    assign(index, expens)
                 }
                 
                 else if(report == ""){
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                    }
+                    assign(index, expens)
                 }
             }
 
@@ -411,6 +393,30 @@
                 
             });
 
+            function assign(index, expens){
+                if (index > -1) {
+                    // Add the expense amount to the existing bar
+                    expenseAmounts[index] += expens.expenseAmount;
+                } else {
+                    // Add a new expense type and expense amount
+                    expenseTyp.push(expens.expenseType);
+                    expenseAmounts.push(expens.expenseAmount);
+                    var color = generateColorFromString()
+                    if (colorMap.get(expens.expenseType) != null) {
+                        color = colorMap.get(expens.expenseType)
+                    }
+
+                    else {
+                        while ([...colorMap.values()].includes(color)) {
+                            color = generateColorFromString()
+                        }
+                        colorMap.set(expens.expenseType, color);
+                    }
+
+                    expenseColor.push(color);
+                }
+            }
+
 
             var expenseAmounts = [];
             var expenseTyp = [];
@@ -423,53 +429,21 @@
                 // If expense type already exists in expenseType array
                 if (report == "Yearly" && moment(expens.expenseDate).year() === currentYear) {
                     // If expense type already exists in expenseType array
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                        
-                    }
+                    assign(index,expens)
                 }
 
                 else if (report == "Monthly" && moment(expens.expenseDate).month() === currentMonth) {
 
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                        
-                    }
+                    assign(index, expens)
 
                 }
 
                 else if (report == "Weekly" && moment(expens.expenseDate).week() === currentWeek) {
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                        
-                    }
+                    assign(index, expens)
                 }
 
                 else if (report == "") {
-                    if (index > -1) {
-                        // Add the expense amount to the existing bar
-                        expenseAmounts[index] += expens.expenseAmount;
-                    } else {
-                        // Add a new expense type and expense amount
-                        expenseTyp.push(expens.expenseType);
-                        expenseAmounts.push(expens.expenseAmount);
-                        
-                    }
+                    assign(index, expens)
                 }
             }
 
