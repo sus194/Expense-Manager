@@ -34,20 +34,21 @@ Before you begin, ensure you have met the following requirements:
 
 Follow these steps to set up and run the Expense Manager Web App locally:
 
-1. Clone the repository:
+1. ###Clone the repository:
 
    ```shell
    git clone https://github.com/yourusername/expense-manager-webapp.git
    cd expense-manager-webapp
    dotnet build
    dotnet run
-2. Usage:
+2. ###Usage:
   1. Register a new user or log in with your existing credentials.
   2. Start by adding your expenses with relevant details.
   3. Explore the various charts and reports to analyze your financial data.
   4. Set expense limits for different categories.
   5. Deploy the app to Azure to make it accessible online.
-Technologies Used
+
+###Technologies Used
 - **ASP.NET Core**: The application is built using the ASP.NET Core framework for web development.
 - **Entity Framework Core**: Entity Framework Core is used for database access and management.
 - **Microsoft Azure**: The app is hosted on Microsoft Azure App Services for seamless deployment and scalability.
